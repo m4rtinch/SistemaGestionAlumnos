@@ -1,13 +1,14 @@
 package modelo;
 
 public class Docente extends Persona {
-
+    private int id;
     private String especialidad;
 
     //  cuando cargamos desde la BD
     public Docente(int id, String nombre, String apellido,
                    String ci, String especialidad) {
         super(nombre, apellido, ci);
+        this.id = id;
         this.especialidad = especialidad;
     }
 
@@ -17,7 +18,7 @@ public class Docente extends Persona {
         super(nombre, apellido, ci);
         this.especialidad = especialidad;
     }
-
+    public int getId() { return id; }
     public String getEspecialidad()         { return especialidad; }
     public void setEspecialidad(String esp) { this.especialidad = esp; }
 

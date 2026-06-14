@@ -41,6 +41,7 @@ public class SistemaGestion {
         System.out.println("3. Inscripciones");
         System.out.println("4. Calificaciones");
         System.out.println("5. Consultas y Búsquedas");
+        System.out.println("6. Gestión de Docentes");
         System.out.println("0. Salir");
         System.out.print("Seleccione una opción: ");
 
@@ -52,6 +53,7 @@ public class SistemaGestion {
             case 3: gestionarInscripciones(); break;
             case 4: gestionarCalificaciones(); break;
             case 5: gestionarConsultas();    break;
+            case 6: gestionarDocentes(); break;
             case 0: return true; // Salir
             default: System.out.println("Opción inválida.");
         }
@@ -982,6 +984,185 @@ public class SistemaGestion {
      * Si el usuario escribe algo que no es número, devuelve -1
      * en lugar de crashear el programa.
      */
+    // ─────────────────────────────────────────────
+// GESTIÓN DE DOCENTES
+// ─────────────────────────────────────────────
+
+    private static void gestionarDocentes() {
+        boolean volver = false;
+        while (!volver) {
+            System.out.println("\n── Gestión de Docentes ──");
+            System.out.println("1. Registrar nuevo docente");
+            System.out.println("2. Modificar docente");
+            System.out.println("3. Eliminar docente");
+            System.out.println("4. Listar todos los docentes");
+            System.out.println("0. Volver");
+            System.out.print("Seleccione una opción: ");
+
+            switch (leerEntero()) {
+                case 1: registrarDocente(); break;
+                case 2: modificarDocente(); break;
+                case 3: eliminarDocente();  break;
+                case 4: listarDocentes();   break;
+                case 0: volver = true;      break;
+                default: System.out.println("Opción inválida.");
+            }
+        }
+    }
+
+    private static void registrarDocente() {
+        System.out.println("\n── Registrar Nuevo Docente ──");
+        System.out.print("Nombre        : "); String nombre       = scanner.nextLine();
+        System.out.print("Apellido      : "); String apellido     = scanner.nextLine();
+        System.out.print("CI            : "); String ci           = scanner.nextLine();
+        System.out.print("Especialidad  : "); String especialidad = scanner.nextLine();
+
+        try {
+            // Verificamos que la CI no esté duplicada
+            if (buscarDocentePorCi(ci) != null) {
+                System.out.println("✗ Error: Ya existe un docente con la CI: " + ci);
+                return;
+            }
+
+            String sql = "INSERT INTO docentes (nombre, apellido, ci, especialidad) VALUES (?, ?, ?, ?)";
+            PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
+            ps.setString(1, nombre);
+            ps.setString(2, apellido);
+            ps.setString(3, ci);
+            ps.setString(4, especialidad);
+            ps.executeUpdate();
+
+            System.out.println("✓ Docente registrado correctamente.");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Error de base de datos: " + e.getMessage());
+        }
+    }
+
+    private static void modificarDocente() {
+        System.out.println("\n── Modificar Docente ──");
+        System.out.print("Ingrese CI del docente: ");
+        String ci = scanner.nextLine();
+
+        try {
+            Docente docente = buscarDocentePorCi(ci);
+            if (docente == null) {
+                System.out.println("✗ No se encontró ningún docente con la CI: " + ci);
+                return;
+            }
+
+            docente.mostrarInfo();
+
+            System.out.print("Nuevo nombre       (Enter para mantener): "); String nombre       = scanner.nextLine();
+            System.out.print("Nuevo apellido     (Enter para mantener): "); String apellido     = scanner.nextLine();
+            System.out.print("Nueva especialidad (Enter para mantener): "); String especialidad = scanner.nextLine();
+
+            if (nombre.isEmpty())       nombre       = docente.getNombre();
+            if (apellido.isEmpty())     apellido     = docente.getApellido();
+            if (especialidad.isEmpty()) especialidad = docente.getEspecialidad();
+
+            String sql = "UPDATE docentes SET nombre=?, apellido=?, especialidad=? WHERE ci=?";
+            PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
+            ps.setString(1, nombre);
+            ps.setString(2, apellido);
+            ps.setString(3, especialidad);
+            ps.setString(4, ci);
+            ps.executeUpdate();
+
+            System.out.println("✓ Docente actualizado correctamente.");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Error de base de datos: " + e.getMessage());
+        }
+    }
+
+    private static void eliminarDocente() {
+        System.out.println("\n── Eliminar Docente ──");
+        System.out.print("Ingrese CI del docente: ");
+        String ci = scanner.nextLine();
+
+        try {
+            Docente docente = buscarDocentePorCi(ci);
+            if (docente == null) {
+                System.out.println("✗ No se encontró ningún docente con la CI: " + ci);
+                return;
+            }
+
+            docente.mostrarInfo();
+
+            // Verificamos si tiene materias asignadas
+            String sqlCheck = "SELECT COUNT(*) FROM materias WHERE id_docente = ?";
+            PreparedStatement psCheck = ConexionBD.getConexion().prepareStatement(sqlCheck);
+            psCheck.setInt(1, docente.getId());
+            ResultSet rs = psCheck.executeQuery();
+            rs.next();
+            int materias = rs.getInt(1);
+
+            if (materias > 0) {
+                System.out.println("⚠ Este docente tiene " + materias + " materia/s asignada/s.");
+                System.out.println("  Al eliminarlo, las materias quedarán sin docente.");
+            }
+
+            System.out.print("¿Confirma la eliminación? (s/n): ");
+            String confirmacion = scanner.nextLine();
+            if (!confirmacion.equalsIgnoreCase("s")) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            String sql = "DELETE FROM docentes WHERE ci = ?";
+            PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
+            ps.setString(1, ci);
+            ps.executeUpdate();
+
+            System.out.println("✓ Docente eliminado correctamente.");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Error de base de datos: " + e.getMessage());
+        }
+    }
+
+    private static void listarDocentes() {
+        System.out.println("\n── Listado de Docentes ──");
+        try {
+            String sql = "SELECT * FROM docentes ORDER BY apellido, nombre";
+            Statement st = ConexionBD.getConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            boolean hayDocentes = false;
+            while (rs.next()) {
+                hayDocentes = true;
+                System.out.printf("CI: %-12s | %-15s %-15s | %s%n",
+                        rs.getString("ci"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("especialidad") != null ? rs.getString("especialidad") : "-");
+            }
+            if (!hayDocentes) System.out.println("No hay docentes registrados.");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Error de base de datos: " + e.getMessage());
+        }
+    }
+
+    // Busca un docente por CI — devuelve null si no existe
+    private static Docente buscarDocentePorCi(String ci) throws SQLException {
+        String sql = "SELECT * FROM docentes WHERE ci = ?";
+        PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
+        ps.setString(1, ci);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return new Docente(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("ci"),
+                    rs.getString("especialidad")
+            );
+        }
+        return null;
+    }
     private static int leerEntero() {
         try {
             String linea = scanner.nextLine();
