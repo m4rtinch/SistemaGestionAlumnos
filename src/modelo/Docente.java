@@ -18,9 +18,18 @@ public class Docente extends Persona {
         super(nombre, apellido, ci);
         this.especialidad = especialidad;
     }
-    public int getId() { return id; }
-    public String getEspecialidad()         { return especialidad; }
-    public void setEspecialidad(String esp) { this.especialidad = esp; }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String esp) {
+        this.especialidad = esp;
+    }
 
     @Override
     public void mostrarInfo() {

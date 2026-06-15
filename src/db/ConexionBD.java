@@ -8,8 +8,8 @@ public class ConexionBD {
 
     // Datos para conectarse a la base de datos local
     // Cambiá "root" y "tu_password" por los tuyos de MySQL
-    private static final String URL      = "jdbc:mysql://localhost:3306/gestion_alumnos";
-    private static final String USER     = "root";
+    private static final String URL = "jdbc:mysql://localhost:3306/gestion_alumnos";
+    private static final String USER = "root";
     private static final String PASSWORD = "admin";
 
     // Variable que guarda la conexión activa
@@ -18,13 +18,14 @@ public class ConexionBD {
 
     // Constructor privado: nadie puede hacer new ConexionBD() desde afuera
     // Esto es el patrón Singleton — garantiza una única instancia
-    private ConexionBD() {}
+    private ConexionBD() {
+    }
 
-    /**
-     * Devuelve la conexión activa.
-     * Si no existe todavía, la crea.
-     * Si ya existe, devuelve la misma — no abre una nueva cada vez.
-     */
+
+    // Devuelve la conexión activa.
+    // Si no existe todavía, la crea.
+    // Si ya existe, devuelve la misma — no abre una nueva cada vez.
+
     public static Connection getConexion() {
         try {
             if (conexion == null || conexion.isClosed()) {
@@ -39,10 +40,10 @@ public class ConexionBD {
         return conexion;
     }
 
-    /**
-     * Cierra la conexión cuando el programa termina.
-     * Importante: dejar conexiones abiertas consume recursos del servidor MySQL.
-     */
+
+    //  Cierra la conexión cuando el programa termina.
+    //  Importante: dejar conexiones abiertas consume recursos del servidor MySQL.
+
     public static void cerrarConexion() {
         try {
             if (conexion != null && !conexion.isClosed()) {

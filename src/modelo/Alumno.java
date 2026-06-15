@@ -1,6 +1,7 @@
 package modelo;
 
 import interfaces.Inscribible;
+
 import java.util.ArrayList;
 
 public class Alumno extends Persona implements Inscribible {
@@ -8,40 +9,62 @@ public class Alumno extends Persona implements Inscribible {
     private String fechaNacimiento;
     private String email;
     private int id;
-    private ArrayList<Materia>      materiasInscriptas;
+    private ArrayList<Materia> materiasInscriptas;
     private ArrayList<Calificacion> calificaciones;
 
 
     public Alumno(int id, String nombre, String apellido, String ci,
                   String fechaNacimiento, String email) {
         super(nombre, apellido, ci);
-        this.id              = id;
-        this.fechaNacimiento    = fechaNacimiento;
-        this.email              = email;
+        this.id = id;
+        this.fechaNacimiento = fechaNacimiento;
+        this.email = email;
         this.materiasInscriptas = new ArrayList<>();
-        this.calificaciones     = new ArrayList<>();
+        this.calificaciones = new ArrayList<>();
     }
 
 
     public Alumno(String nombre, String apellido, String ci,
                   String fechaNacimiento, String email) {
         super(nombre, apellido, ci);
-        this.fechaNacimiento    = fechaNacimiento;
-        this.email              = email;
+        this.fechaNacimiento = fechaNacimiento;
+        this.email = email;
         this.materiasInscriptas = new ArrayList<>();
-        this.calificaciones     = new ArrayList<>();
+        this.calificaciones = new ArrayList<>();
     }
 
-    public String                   getFechaNacimiento()  { return fechaNacimiento; }
-    public String                   getEmail()            { return email; }
-    public int getId() { return id; }
-    public ArrayList<Materia>       getMateriasInscriptas() { return materiasInscriptas; }
-    public ArrayList<Calificacion>  getCalificaciones()   { return calificaciones; }
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public ArrayList<Materia> getMateriasInscriptas() {
+        return materiasInscriptas;
+    }
+
+    public ArrayList<Calificacion> getCalificaciones() {
+        return calificaciones;
+    }
 
     // La CI no tiene setter: nunca se modifica
-    public void setNombre(String nombre)     { this.nombre   = nombre; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
-    public void setEmail(String email)       { this.email    = email; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
     // Implementación de Inscribible
     // Solo actualiza la lista en memoria, la BD se maneja por separado

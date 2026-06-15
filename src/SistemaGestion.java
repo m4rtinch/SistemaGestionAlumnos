@@ -1,9 +1,13 @@
 import db.ConexionBD;
-import excepciones.*;
-import modelo.*;
+import excepciones.AlumnoDuplicadoException;
+import excepciones.AlumnoNoEncontradoException;
+import excepciones.CupoExcedidoException;
+import excepciones.MateriaNoEncontradaException;
+import modelo.Alumno;
+import modelo.Docente;
+import modelo.Materia;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SistemaGestion {
@@ -48,14 +52,28 @@ public class SistemaGestion {
         int opcion = leerEntero();
 
         switch (opcion) {
-            case 1: gestionarAlumnos();      break;
-            case 2: gestionarMaterias();     break;
-            case 3: gestionarInscripciones(); break;
-            case 4: gestionarCalificaciones(); break;
-            case 5: gestionarConsultas();    break;
-            case 6: gestionarDocentes(); break;
-            case 0: return true; // Salir
-            default: System.out.println("Opción inválida.");
+            case 1:
+                gestionarAlumnos();
+                break;
+            case 2:
+                gestionarMaterias();
+                break;
+            case 3:
+                gestionarInscripciones();
+                break;
+            case 4:
+                gestionarCalificaciones();
+                break;
+            case 5:
+                gestionarConsultas();
+                break;
+            case 6:
+                gestionarDocentes();
+                break;
+            case 0:
+                return true; // Salir
+            default:
+                System.out.println("Opción inválida.");
         }
         return false;
     }
@@ -76,23 +94,39 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: registrarAlumno();   break;
-                case 2: modificarAlumno();   break;
-                case 3: eliminarAlumno();    break;
-                case 4: listarAlumnos();     break;
-                case 0: volver = true;       break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    registrarAlumno();
+                    break;
+                case 2:
+                    modificarAlumno();
+                    break;
+                case 3:
+                    eliminarAlumno();
+                    break;
+                case 4:
+                    listarAlumnos();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
 
     private static void registrarAlumno() {
         System.out.println("\n── Registrar Nuevo Alumno ──");
-        System.out.print("Nombre        : "); String nombre   = scanner.nextLine();
-        System.out.print("Apellido      : "); String apellido = scanner.nextLine();
-        System.out.print("CI            : "); String ci       = scanner.nextLine();
-        System.out.print("Fecha nac (YYYY-MM-DD): "); String fecha = scanner.nextLine();
-        System.out.print("Email         : "); String email    = scanner.nextLine();
+        System.out.print("Nombre        : ");
+        String nombre = scanner.nextLine();
+        System.out.print("Apellido      : ");
+        String apellido = scanner.nextLine();
+        System.out.print("CI            : ");
+        String ci = scanner.nextLine();
+        System.out.print("Fecha nac (YYYY-MM-DD): ");
+        String fecha = scanner.nextLine();
+        System.out.print("Email         : ");
+        String email = scanner.nextLine();
 
         try {
             // Verificamos que la CI no esté duplicada antes de insertar
@@ -131,14 +165,17 @@ public class SistemaGestion {
             // Mostramos datos actuales
             alumno.mostrarInfo();
 
-            System.out.print("Nuevo nombre   (Enter para mantener): "); String nombre   = scanner.nextLine();
-            System.out.print("Nuevo apellido (Enter para mantener): "); String apellido = scanner.nextLine();
-            System.out.print("Nuevo email    (Enter para mantener): "); String email    = scanner.nextLine();
+            System.out.print("Nuevo nombre   (Enter para mantener): ");
+            String nombre = scanner.nextLine();
+            System.out.print("Nuevo apellido (Enter para mantener): ");
+            String apellido = scanner.nextLine();
+            System.out.print("Nuevo email    (Enter para mantener): ");
+            String email = scanner.nextLine();
 
             // Si el usuario no escribió nada, mantenemos el valor actual
-            if (nombre.isEmpty())   nombre   = alumno.getNombre();
+            if (nombre.isEmpty()) nombre = alumno.getNombre();
             if (apellido.isEmpty()) apellido = alumno.getApellido();
-            if (email.isEmpty())    email    = alumno.getEmail();
+            if (email.isEmpty()) email = alumno.getEmail();
 
             String sql = "UPDATE alumnos SET nombre=?, apellido=?, email=? WHERE ci=?";
             PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
@@ -228,11 +265,10 @@ public class SistemaGestion {
     // MÉTODOS AUXILIARES
     // ─────────────────────────────────────────────
 
-    /**
-     * Busca un alumno en la BD por su CI.
-     * Devuelve un objeto Alumno si lo encuentra, o null si no existe.
-     * Lo usamos en varios métodos para no repetir el mismo SELECT.
-     */
+    // Busca un alumno en la BD por su CI.
+    // Devuelve un objeto Alumno si lo encuentra, o null si no existe.
+    // Lo usamos en varios métodos para no repetir el mismo SELECT.
+
     private static Alumno buscarAlumnoPorCi(String ci) throws SQLException {
         String sql = "SELECT * FROM alumnos WHERE ci = ?";
         PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
@@ -253,8 +289,8 @@ public class SistemaGestion {
     }
 
     // ─────────────────────────────────────────────
-// GESTIÓN DE MATERIAS
-// ─────────────────────────────────────────────
+    // GESTIÓN DE MATERIAS
+    // ─────────────────────────────────────────────
 
     private static void gestionarMaterias() {
         boolean volver = false;
@@ -268,21 +304,35 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: registrarMateria(); break;
-                case 2: modificarMateria(); break;
-                case 3: eliminarMateria();  break;
-                case 4: listarMaterias();   break;
-                case 0: volver = true;      break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    registrarMateria();
+                    break;
+                case 2:
+                    modificarMateria();
+                    break;
+                case 3:
+                    eliminarMateria();
+                    break;
+                case 4:
+                    listarMaterias();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
 
     private static void registrarMateria() {
         System.out.println("\n── Registrar Nueva Materia ──");
-        System.out.print("Nombre      : "); String nombre = scanner.nextLine();
-        System.out.print("Código      : "); String codigo = scanner.nextLine();
-        System.out.print("Cupo máximo : "); int cupo = leerEntero();
+        System.out.print("Nombre      : ");
+        String nombre = scanner.nextLine();
+        System.out.print("Código      : ");
+        String codigo = scanner.nextLine();
+        System.out.print("Cupo máximo : ");
+        int cupo = leerEntero();
 
         try {
             // Verificamos que el código no esté duplicado
@@ -315,12 +365,14 @@ public class SistemaGestion {
             if (materia == null) throw new MateriaNoEncontradaException(codigo);
 
             System.out.println("Materia actual: " + materia);
-            System.out.print("Nuevo nombre (Enter para mantener): "); String nombre = scanner.nextLine();
-            System.out.print("Nuevo cupo   (0 para mantener)   : "); int cupo = leerEntero();
+            System.out.print("Nuevo nombre (Enter para mantener): ");
+            String nombre = scanner.nextLine();
+            System.out.print("Nuevo cupo   (0 para mantener)   : ");
+            int cupo = leerEntero();
 
             // Si no escribió nada, mantenemos el valor actual
             if (nombre.isEmpty()) nombre = materia.getNombre();
-            if (cupo <= 0)        cupo   = materia.getCupoMaximo();
+            if (cupo <= 0) cupo = materia.getCupoMaximo();
 
             String sql = "UPDATE materias SET nombre=?, cupo_maximo=? WHERE codigo=?";
             PreparedStatement ps = ConexionBD.getConexion().prepareStatement(sql);
@@ -423,8 +475,8 @@ public class SistemaGestion {
         return null;
     }
     // ─────────────────────────────────────────────
-// GESTIÓN DE INSCRIPCIONES
-// ─────────────────────────────────────────────
+    // GESTIÓN DE INSCRIPCIONES
+    // ─────────────────────────────────────────────
 
     private static void gestionarInscripciones() {
         boolean volver = false;
@@ -437,19 +489,30 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: inscribirAlumno();         break;
-                case 2: darDeBajaAlumno();         break;
-                case 3: listarInscriptosMateria(); break;
-                case 0: volver = true;             break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    inscribirAlumno();
+                    break;
+                case 2:
+                    darDeBajaAlumno();
+                    break;
+                case 3:
+                    listarInscriptosMateria();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
 
     private static void inscribirAlumno() {
         System.out.println("\n── Inscribir Alumno ──");
-        System.out.print("CI del alumno        : "); String ci     = scanner.nextLine();
-        System.out.print("Código de la materia : "); String codigo = scanner.nextLine();
+        System.out.print("CI del alumno        : ");
+        String ci = scanner.nextLine();
+        System.out.print("Código de la materia : ");
+        String codigo = scanner.nextLine();
 
         try {
             // Validación 1: el alumno existe?
@@ -505,8 +568,10 @@ public class SistemaGestion {
 
     private static void darDeBajaAlumno() {
         System.out.println("\n── Dar de Baja ──");
-        System.out.print("CI del alumno        : "); String ci     = scanner.nextLine();
-        System.out.print("Código de la materia : "); String codigo = scanner.nextLine();
+        System.out.print("CI del alumno        : ");
+        String ci = scanner.nextLine();
+        System.out.print("Código de la materia : ");
+        String codigo = scanner.nextLine();
 
         try {
             Alumno alumno = buscarAlumnoPorCi(ci);
@@ -591,8 +656,8 @@ public class SistemaGestion {
         }
     }
     // ─────────────────────────────────────────────
-// GESTIÓN DE CALIFICACIONES
-// ─────────────────────────────────────────────
+    // GESTIÓN DE CALIFICACIONES
+    // ─────────────────────────────────────────────
 
     private static void gestionarCalificaciones() {
         boolean volver = false;
@@ -606,20 +671,33 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: cargarNota();        break;
-                case 2: modificarNota();     break;
-                case 3: eliminarNota();      break;
-                case 4: verNotasAlumno();    break;
-                case 0: volver = true;       break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    cargarNota();
+                    break;
+                case 2:
+                    modificarNota();
+                    break;
+                case 3:
+                    eliminarNota();
+                    break;
+                case 4:
+                    verNotasAlumno();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
 
     private static void cargarNota() {
         System.out.println("\n── Cargar Nota ──");
-        System.out.print("CI del alumno        : "); String ci     = scanner.nextLine();
-        System.out.print("Código de la materia : "); String codigo = scanner.nextLine();
+        System.out.print("CI del alumno        : ");
+        String ci = scanner.nextLine();
+        System.out.print("Código de la materia : ");
+        String codigo = scanner.nextLine();
 
         try {
             Alumno alumno = buscarAlumnoPorCi(ci);
@@ -646,7 +724,7 @@ public class SistemaGestion {
             // Pedimos la nota y validamos que esté entre 1 y 12
             System.out.print("Nota (1-12): ");
             double nota = Double.parseDouble(scanner.nextLine().trim());
-            if (nota < 1 || nota > 12) {
+            if (nota <= 1 && nota >= 12) {
                 System.out.println("✗ La nota debe estar entre 1 y 12.");
                 return;
             }
@@ -802,9 +880,10 @@ public class SistemaGestion {
             System.out.println("✗ Error de base de datos: " + e.getMessage());
         }
     }
-// ─────────────────────────────────────────────
-// CONSULTAS Y BÚSQUEDAS
-// ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
+    // CONSULTAS Y BÚSQUEDAS
+    // ─────────────────────────────────────────────
 
     private static void gestionarConsultas() {
         boolean volver = false;
@@ -817,11 +896,20 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: buscarPorCi();             break;
-                case 2: buscarPorNombreApellido(); break;
-                case 3: listarPorEstado();         break;
-                case 0: volver = true;             break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    buscarPorCi();
+                    break;
+                case 2:
+                    buscarPorNombreApellido();
+                    break;
+                case 3:
+                    listarPorEstado();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
@@ -979,14 +1067,14 @@ public class SistemaGestion {
         }
     }
 
-    /**
-     * Lee un número entero del teclado.
-     * Si el usuario escribe algo que no es número, devuelve -1
-     * en lugar de crashear el programa.
-     */
+    // * Lee un número entero del teclado.
+    // * Si el usuario escribe algo que no es número, devuelve -1
+    // * en lugar de crashear el programa.
+
+
     // ─────────────────────────────────────────────
-// GESTIÓN DE DOCENTES
-// ─────────────────────────────────────────────
+    // GESTIÓN DE DOCENTES
+    // ─────────────────────────────────────────────
 
     private static void gestionarDocentes() {
         boolean volver = false;
@@ -1000,22 +1088,37 @@ public class SistemaGestion {
             System.out.print("Seleccione una opción: ");
 
             switch (leerEntero()) {
-                case 1: registrarDocente(); break;
-                case 2: modificarDocente(); break;
-                case 3: eliminarDocente();  break;
-                case 4: listarDocentes();   break;
-                case 0: volver = true;      break;
-                default: System.out.println("Opción inválida.");
+                case 1:
+                    registrarDocente();
+                    break;
+                case 2:
+                    modificarDocente();
+                    break;
+                case 3:
+                    eliminarDocente();
+                    break;
+                case 4:
+                    listarDocentes();
+                    break;
+                case 0:
+                    volver = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
     }
 
     private static void registrarDocente() {
         System.out.println("\n── Registrar Nuevo Docente ──");
-        System.out.print("Nombre        : "); String nombre       = scanner.nextLine();
-        System.out.print("Apellido      : "); String apellido     = scanner.nextLine();
-        System.out.print("CI            : "); String ci           = scanner.nextLine();
-        System.out.print("Especialidad  : "); String especialidad = scanner.nextLine();
+        System.out.print("Nombre        : ");
+        String nombre = scanner.nextLine();
+        System.out.print("Apellido      : ");
+        String apellido = scanner.nextLine();
+        System.out.print("CI            : ");
+        String ci = scanner.nextLine();
+        System.out.print("Especialidad  : ");
+        String especialidad = scanner.nextLine();
 
         try {
             // Verificamos que la CI no esté duplicada
@@ -1053,12 +1156,15 @@ public class SistemaGestion {
 
             docente.mostrarInfo();
 
-            System.out.print("Nuevo nombre       (Enter para mantener): "); String nombre       = scanner.nextLine();
-            System.out.print("Nuevo apellido     (Enter para mantener): "); String apellido     = scanner.nextLine();
-            System.out.print("Nueva especialidad (Enter para mantener): "); String especialidad = scanner.nextLine();
+            System.out.print("Nuevo nombre       (Enter para mantener): ");
+            String nombre = scanner.nextLine();
+            System.out.print("Nuevo apellido     (Enter para mantener): ");
+            String apellido = scanner.nextLine();
+            System.out.print("Nueva especialidad (Enter para mantener): ");
+            String especialidad = scanner.nextLine();
 
-            if (nombre.isEmpty())       nombre       = docente.getNombre();
-            if (apellido.isEmpty())     apellido     = docente.getApellido();
+            if (nombre.isEmpty()) nombre = docente.getNombre();
+            if (apellido.isEmpty()) apellido = docente.getApellido();
             if (especialidad.isEmpty()) especialidad = docente.getEspecialidad();
 
             String sql = "UPDATE docentes SET nombre=?, apellido=?, especialidad=? WHERE ci=?";
@@ -1163,6 +1269,7 @@ public class SistemaGestion {
         }
         return null;
     }
+
     private static int leerEntero() {
         try {
             String linea = scanner.nextLine();

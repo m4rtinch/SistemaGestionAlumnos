@@ -9,14 +9,22 @@ public abstract class Persona {
 
 
     public Persona(String nombre, String apellido, String ci) {
-        this.nombre   = nombre;
+        this.nombre = nombre;
         this.apellido = apellido;
-        this.ci       = ci;
+        this.ci = ci;
     }
 
-    public String getNombre()   { return nombre; }
-    public String getApellido() { return apellido; }
-    public String getCi()       { return ci; }
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public String getCi() {
+        return ci;
+    }
 
 
     public abstract void mostrarInfo();
